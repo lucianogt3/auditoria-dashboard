@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Auditoria Hospitalar · Apresentação Executiva com Filtro</title>
+  <style>
+    :root {
+      --bg: #0b1220;
+      --panel: rgba(255,255,255,.06);
+      --stroke: rgba(255,255,255,.12);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.65);
+      --accent: #22c55e;
+      --accent2: #38bdf8;
+      --warn: #fbbf24;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(1200px 700px at 20% 10%, rgba(56,189,248,.14), transparent 60%),
+        radial-gradient(1000px 700px at 80% 20%, rgba(34,197,94,.10), transparent 55%),
+        radial-gradient(800px 600px at 60% 90%, rgba(251,191,36,.10), transparent 60%),
+        var(--bg);
+    }
+    a { color: inherit; }
+    .container { max-width: 1180px; margin: 0 auto; padding: 28px 18px 40px; }
+    .header {
+      display:flex; align-items:flex-end; justify-content:space-between; gap: 18px;
+      padding: 18px 18px 14px; border:1px solid var(--stroke); border-radius: 18px;
+      background: linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+    }
+    .brand {
+      display:flex; gap: 14px; align-items:center;
+    }
+    .mark {
+      width: 46px; height: 46px; border-radius: 14px;
+      display:grid; place-items:center;
+      font-weight: 800; letter-spacing:.02em;
+      background: linear-gradient(135deg, rgba(56,189,248,.22), rgba(34,197,94,.18));
+      border: 1px solid var(--stroke);
+    }
+    .h1 { margin:0; font-size: 22px; line-height: 1.15; letter-spacing: -0.02em; }
+    .sub { margin: 6px 0 0; color: var(--muted); font-size: 13px; }
+    .meta { text-align:right; color: var(--muted); font-size: 12px; }
+    .badge {
+      display:inline-flex; align-items:center; gap: 8px;
+      padding: 6px 10px; border-radius: 999px; border: 1px solid var(--stroke);
+      background: rgba(255,255,255,.04);
+    }
+    .grid { display:grid; gap: 14px; }
+    .kpis { grid-template-columns: repeat(5, minmax(0, 1fr)); margin-top: 14px; }
+    .card {
+      padding: 14px 14px 12px;
+      border: 1px solid var(--stroke);
+      border-radius: 16px;
+      background: rgba(255,255,255,.05);
+    }
+    .k-label { color: var(--muted); font-size: 12px; }
+    .k-value { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; margin-top: 6px; }
+    .k-foot { color: var(--muted); font-size: 11px; margin-top: 4px; }
+    .section { margin-top: 16px; }
+    .section-title { font-size: 14px; font-weight: 800; margin: 0 0 8px; }
+    .section-sub { margin: 0 0 12px; color: var(--muted); font-size: 12px; }
+    .two { grid-template-columns: 1.15fr .85fr; }
+    .three { grid-template-columns: 1fr 1fr 1fr; }
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    .table th, .table td {
+      padding: 8px 8px;
+      border-bottom: 1px solid rgba(255,255,255,.10);
+      vertical-align: top;
+    }
+    .table th { text-align:left; color: rgba(255,255,255,.78); font-weight: 600; }
+    .table td.num { text-align:right; font-variant-numeric: tabular-nums; }
+    .muted { color: var(--muted); }
+    .compare {
+      display:grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    }
+    .compare-card {
+      border: 1px solid var(--stroke);
+      border-radius: 16px;
+      background: rgba(255,255,255,.05);
+      padding: 14px;
+    }
+    .compare-title { font-weight: 900; letter-spacing:-.02em; }
+    .compare-kpis { display:grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+    .compare-kpis .k { display:block; color: var(--muted); font-size: 11px; }
+    .compare-kpis .v { display:block; font-weight: 800; margin-top: 2px; font-variant-numeric: tabular-nums; }
+    .callout {
+      border: 1px solid rgba(251,191,36,.35);
+      background: rgba(251,191,36,.08);
+      border-radius: 16px;
+      padding: 12px 14px;
+      color: rgba(255,255,255,.9);
+      font-size: 12px;
+    }
+    .footer { margin-top: 18px; color: var(--muted); font-size: 11px; text-align:center; }
+    .bar-container { display: flex; align-items: center; gap: 6px; }
+    .bar { height: 6px; background: var(--accent2); border-radius: 4px; }
+
+    /* filtros */
+    .filtros {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      background: rgba(0,0,0,0.3);
+      padding: 14px 18px;
+      border-radius: 40px;
+      border: 1px solid var(--stroke);
+      margin-bottom: 10px;
+      align-items: center;
+    }
+    .filtro-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .filtro-group label {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    select, .filtro-group input {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid var(--stroke);
+      border-radius: 30px;
+      padding: 6px 12px;
+      color: white;
+      font-size: 13px;
+      outline: none;
+    }
+    select option { background: #1e2a3a; }
+    button {
+      background: var(--accent2);
+      border: none;
+      border-radius: 30px;
+      padding: 6px 18px;
+      font-weight: 600;
+      font-size: 12px;
+      color: #0b1220;
+      cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    button:hover { background: #2aa9e0; }
+    .tag {
+      background: rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    @media (max-width: 1100px) {
+      .kpis { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .two { grid-template-columns: 1fr; }
+      .three { grid-template-columns: 1fr; }
+      .compare { grid-template-columns: 1fr; }
+      .meta { text-align:left; }
+      .header { align-items:flex-start; flex-direction:column; }
+      .filtros { flex-direction: column; align-items: stretch; }
+    }
+    @media print {
+      body { background: #fff; color: #111; }
+      :root { --text:#111; --muted:#444; --stroke:#ddd; }
+      .card, .header, .compare-card, .callout { background:#fff; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- cabeçalho com dados do JSON -->
+  <div class="header">
+    <div class="brand">
+      <div class="mark">AH</div>
+      <div>
+        <h1 class="h1">Auditoria Hospitalar · Apresentação Executiva</h1>
+        <p class="sub">Base: <b>1.017</b> prontuários e <b>4.885</b> erros (SQLite).</p>
+      </div>
+    </div>
+    <div class="meta">
+      <div class="badge">Atualizado com dados do seu banco</div>
+      <div style="margin-top:8px">Período detectado: <b>2025-10</b> → <b>2026-02</b></div>
+    </div>
+  </div>
+
+  <!-- FILTRO INTERATIVO (por mês) -->
+  <div class="filtros">
+    <span class="tag">🔍 FILTRO DE PERÍODO (dados mensais)</span>
+    <div class="filtro-group">
+      <label>De:</label>
+      <select id="mesInicio">
+        <option value="2025-10">2025-10</option>
+        <option value="2025-11">2025-11</option>
+        <option value="2025-12" selected>2025-12</option>
+        <option value="2026-01">2026-01</option>
+        <option value="2026-02">2026-02</option>
+      </select>
+    </div>
+    <div class="filtro-group">
+      <label>Até:</label>
+      <select id="mesFim">
+        <option value="2025-10">2025-10</option>
+        <option value="2025-11">2025-11</option>
+        <option value="2025-12">2025-12</option>
+        <option value="2026-01">2026-01</option>
+        <option value="2026-02" selected>2026-02</option>
+      </select>
+    </div>
+    <button id="aplicarFiltro">Aplicar filtro</button>
+    <span class="tag" id="indicadorFiltro">mostrando período selecionado</span>
+  </div>
+
+  <!-- KPIS (serão atualizados via JS) -->
+  <div class="grid kpis" id="kpisContainer">
+    <!-- preenchido por js -->
+  </div>
+
+  <!-- Destaque Dez vs Jan (será atualizado) -->
+  <div class="section" id="destaqueSection">
+    <h2 class="section-title">Destaque do período (filtrado)</h2>
+    <p class="section-sub">Comparativo entre o primeiro e o último mês do intervalo selecionado.</p>
+    <div class="compare" id="compareContainer"></div>
+    <div class="callout" id="calloutTexto" style="margin-top:12px"></div>
+  </div>
+
+  <!-- Tendência mensal (filtrada) + SLAs (fixos) -->
+  <div class="section grid two">
+    <div class="card" id="tendenciaCard">
+      <h3 class="section-title" style="margin-top:0">Tendência mensal (filtrada)</h3>
+      <p class="section-sub">Série histórica no intervalo selecionado.</p>
+      <div style="overflow-x: auto;" id="tabelaTendencia"></div>
+    </div>
+    <div class="card">
+      <h3 class="section-title" style="margin-top:0">SLAs e tempos (dados válidos)</h3>
+      <p class="section-sub">Intervalos não‑negativos, outliers removidos (totais globais).</p>
+      <div style="overflow:auto">
+        <table class="table">
+          <thead><tr><th>Métrica</th><th class="num">Mediana</th><th class="num">Média</th><th class="num">P90</th><th class="muted">Amostra</th></tr></thead>
+          <tbody>
+            <tr><td>Tempo de permanência (alta − admissão)</td><td class="num">1,0</td><td class="num">1,3</td><td class="num">1,0</td><td class="muted">n=835</td></tr>
+            <tr><td>Recebimento → Fim auditoria</td><td class="num">1,0</td><td class="num">2,1</td><td class="num">4,0</td><td class="muted">n=832</td></tr>
+            <tr><td>Fim auditoria → Envio faturamento</td><td class="num">0,0</td><td class="num">0,0</td><td class="num">0,0</td><td class="muted">n=821</td></tr>
+            <tr><td>Alta → Envio faturamento</td><td class="num">8,0</td><td class="num">9,6</td><td class="num">16,0</td><td class="muted">n=827</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="muted" style="margin:10px 0 0; font-size:11px">
+        Obs.: SLAs “estranhos” (negativo/muito alto) costumam vir de datas invertidas ou vazias.
+      </p>
+    </div>
+  </div>
+
+  <!-- Top setor / convênio / tipo (fixos - totais globais) -->
+  <div class="section grid three">
+    <div class="card">
+      <h3 class="section-title" style="margin-top:0">Erros por setor (global)</h3>
+      <p class="section-sub">Top (dados disponíveis)</p>
+      <table class="table">
+        <thead><tr><th>Setor</th><th class="num">Erros</th></tr></thead>
+        <tbody>
+          <tr><td>INTERNAÇÃO / CC</td><td class="num">4.547</td></tr>
+          <tr><td>INTERNAÇÃO / CLINICA</td><td class="num">338</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <h3 class="section-title" style="margin-top:0">Erros por convênio (global)</h3>
+      <p class="section-sub">Top 10</p>
+      <div style="overflow:auto; max-height:200px">
+        <table class="table">
+          <thead><tr><th>Convênio</th><th class="num">Erros</th></tr></thead>
+          <tbody>
+            <tr><td>UNIMED</td><td class="num">3.776</td></tr>
+            <tr><td>UNIMED / INTERCÂMBIO</td><td class="num">517</td></tr>
+            <tr><td>MAIS SAUDE</td><td class="num">365</td></tr>
+            <tr><td>SUL AMERICA</td><td class="num">95</td></tr>
+            <tr><td>CASSI</td><td class="num">46</td></tr>
+            <tr><td>BRADESCO</td><td class="num">23</td></tr>
+            <tr><td>VIVACOM</td><td class="num">21</td></tr>
+            <tr><td>AFFEGO</td><td class="num">16</td></tr>
+            <tr><td>UNIMED/ INTERCAMBIO</td><td class="num">8</td></tr>
+            <tr><td>FUSEX</td><td class="num">6</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <h3 class="section-title" style="margin-top:0">Tipos de erro (global)</h3>
+      <p class="section-sub">Top</p>
+      <table class="table">
+        <thead><tr><th>Tipo</th><th class="num">Erros</th></tr></thead>
+        <tbody>
+          <tr><td>ERRO FATURAMENTO</td><td class="num">3.627</td></tr>
+          <tr><td>ERRO ENFERMAGEM</td><td class="num">934</td></tr>
+          <tr><td>ERRO MÉDICO</td><td class="num">199</td></tr>
+          <tr><td>ERRO RECEPÇÃO</td><td class="num">124</td></tr>
+          <tr><td>ERRO ENVOLVENDO EQUIPE MULTIDICIPLINAR</td><td class="num">1</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Causas (global) e responsáveis (global) -->
+  <div class="section grid two">
+    <div class="card">
+      <h3 class="section-title" style="margin-top:0">Pareto de causas (global)</h3>
+      <p class="section-sub">Top 15 causas (base total 4.885 erros)</p>
+      <div style="overflow:auto; max-height:360px" id="tabelaCausasGlobal">
+        <!-- será preenchido via js com os dados fixos, mas já está inline -->
+      </div>
+    </div>
+    <div class="card">
+      <h3 class="section-title" style="margin-top:0">Responsáveis (global)</h3>
+      <p class="section-sub">Top 10 responsáveis vinculados no registro do erro.</p>
+      <div style="overflow:auto">
+        <table class="table">
+          <thead><tr><th>Responsável</th><th class="num">Erros</th></tr></thead>
+          <tbody>
+            <tr><td>BRUNO TAVARES</td><td class="num">2.324</td></tr>
+            <tr><td>KATIA ALVES</td><td class="num">1.064</td></tr>
+            <tr><td>SABRYNA GABRIELLA</td><td class="num">803</td></tr>
+            <tr><td>LEDISMAR</td><td class="num">164</td></tr>
+            <tr><td>WARLEY</td><td class="num">139</td></tr>
+            <tr><td>LORENA</td><td class="num">88</td></tr>
+            <tr><td>KALITA OLIVEIRA LISBOA</td><td class="num">12</td></tr>
+            <tr><td>ANA KAROLINA</td><td class="num">8</td></tr>
+            <tr><td>RENATO MARINHO</td><td class="num">4</td></tr>
+            <tr><td>JUNICHIRO</td><td class="num">3</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Próximos passos -->
+  <div class="section grid two">
+    <div class="card">
+      <h3 class="section-title" style="margin-top:0">Próximos passos sugeridos</h3>
+      <p class="section-sub">Com base no seu banco, dá para evoluir para governança e redução de retrabalho.</p>
+      <ol style="margin:0; padding-left: 18px; color: rgba(255,255,255,.86); font-size: 12px; line-height:1.55">
+        <li><b>Padronizar datas</b> (recebimento, fim auditoria, faturamento) e bloquear inversões.</li>
+        <li><b>Completar dicionários</b>: <code>categoria_erro</code> está vazio — preencher e vincular.</li>
+        <li><b>Plano 80/20</b>: atacar as 3–5 causas líderes (Pareto) com ações e re-auditoria mensal.</li>
+        <li><b>Metas</b>: reduzir “erros por prontuário” e “% prontuários com erro” por setor/convênio.</li>
+        <li><b>Rotina executiva</b>: gerar esta apresentação mensal automaticamente (HTML/PDF).</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3 class="section-title" style="margin-top:0">Nota sobre o filtro</h3>
+      <p class="section-sub">O filtro de período atualiza apenas os KPIs, a tabela de tendência mensal e o comparativo de destaque. As demais seções (setor, convênio, causas, responsáveis) mostram os totais globais, pois o JSON não contém detalhamento mensal para essas categorias.</p>
+    </div>
+  </div>
+
+  <div class="footer">
+    Arquivo estático (HTML+JS) · Gerado a partir do seu <code>auditoria.db</code> · Filtro interativo aplicado.
+  </div>
+</div>
+
+<script>
+  // Dados brutos do JSON (embutidos)
+  const dadosCompletos = {
+    kpis: {
+      total_prontuarios: 1017,
+      prontuarios_com_erro: 940,
+      total_erros: 4885,
+      taxa_prontuario_com_erro: 92.42871189773845,
+      erros_por_prontuario: 4.803343166175025
+    },
+    monthly: [
+      { ym: "2025-10", prontuarios: 87, prontuarios_com_erro: 87, erros: 438 },
+      { ym: "2025-11", prontuarios: 182, prontuarios_com_erro: 153, erros: 643 },
+      { ym: "2025-12", prontuarios: 348, prontuarios_com_erro: 313, erros: 2125 },
+      { ym: "2026-01", prontuarios: 206, prontuarios_com_erro: 194, erros: 1179 },
+      { ym: "2026-02", prontuarios: 16, prontuarios_com_erro: 15, erros: 72 }
+    ],
+    top_causa: [
+      { causa: "MATERIAL NÃO COBRADO", erros: 1380 },
+      { causa: "MEDICAÇÃO NÃO COBRADA", erros: 1099 },
+      { causa: "FALTA IMPRESSÃO RELATORIOS CENTRO CIRURGICO", erros: 596 },
+      { causa: "COBRANÇA INDEVIDA ", erros: 482 },
+      { causa: "NÃO COBRADO TX ALIMENTAÇÃO", erros: 183 },
+      { causa: "FALTA IMPRESSÃO EVOLUÇÃO MÉDICA ", erros: 146 },
+      { causa: "COBRANÇA INDEVIDA", erros: 86 },
+      { causa: "FALTA COBRAR FIO CIRURGICO", erros: 86 },
+      { causa: "FALTA IMPRESSÃO RELATÓRIO DE ENFERMAGEM", erros: 83 },
+      { causa: "GUIA SEM ASSINATURA", erros: 72 },
+      { causa: "FALTA IMPRESSÃO RELATORIO DE ENFERMAGEM", erros: 63 },
+      { causa: "FALTA IMPRESSÃO EVOLUÇÃO MEDICA", erros: 51 },
+      { causa: "FALTA IMPRESSÃO RELATÓRIO DE ENFERMAGEM POSTO", erros: 49 },
+      { causa: "FALTA BOLAR OU CHECAR MEDICAÇÃO ", erros: 43 },
+      { causa: "TX ALIMENTAÇÃO", erros: 42 }
+    ]
+  };
+
+  // elementos
+  const mesInicio = document.getElementById('mesInicio');
+  const mesFim = document.getElementById('mesFim');
+  const btnFiltro = document.getElementById('aplicarFiltro');
+  const kpisContainer = document.getElementById('kpisContainer');
+  const tabelaTendencia = document.getElementById('tabelaTendencia');
+  const compareContainer = document.getElementById('compareContainer');
+  const calloutTexto = document.getElementById('calloutTexto');
+  const indicadorFiltro = document.getElementById('indicadorFiltro');
+
+  // Preencher tabela de causas global (uma vez)
+  function preencherCausas() {
+    const container = document.getElementById('tabelaCausasGlobal');
+    if (!container) return;
+    let html = `<table class="table"><thead><tr><th>Causa</th><th class="num">Erros</th><th class="num">%</th></tr></thead><tbody>`;
+    const totalErros = dadosCompletos.kpis.total_erros;
+    dadosCompletos.top_causa.forEach(item => {
+      const pct = (item.erros / totalErros * 100).toFixed(2);
+      html += `<tr><td>${item.causa}</td><td class="num">${item.erros.toLocaleString()}</td><td class="num">${pct}%</td></tr>`;
+    });
+    html += `</tbody></table><p class="muted" style="margin-top:8px">* percentuais sobre total global (4.885 erros).</p>`;
+    container.innerHTML = html;
+  }
+  preencherCausas();
+
+  // Função que filtra monthly com base no intervalo
+  function getMonthlyFiltrado(inicio, fim) {
+    const meses = dadosCompletos.monthly;
+    const idxInicio = meses.findIndex(m => m.ym === inicio);
+    const idxFim = meses.findIndex(m => m.ym === fim);
+    if (idxInicio === -1 || idxFim === -1 || idxInicio > idxFim) return [];
+    return meses.slice(idxInicio, idxFim + 1);
+  }
+
+  // Atualiza KPIs, tabela tendência e destaque
+  function aplicarFiltro() {
+    const inicio = mesInicio.value;
+    const fim = mesFim.value;
+    const filtrados = getMonthlyFiltrado(inicio, fim);
+
+    // calcular totais do período filtrado
+    let totalPront = 0, totalProntErro = 0, totalErros = 0;
+    filtrados.forEach(m => {
+      totalPront += m.prontuarios;
+      totalProntErro += m.prontuarios_com_erro;
+      totalErros += m.erros;
+    });
+    const taxa = totalPront > 0 ? (totalProntErro / totalPront * 100).toFixed(2) : 0;
+    const errosPorPront = totalPront > 0 ? (totalErros / totalPront).toFixed(2) : 0;
+
+    // Atualizar KPIs
+    kpisContainer.innerHTML = `
+      <div class="card"><div class="k-label">Prontuários (filtro)</div><div class="k-value">${totalPront.toLocaleString()}</div><div class="k-foot">No período</div></div>
+      <div class="card"><div class="k-label">Pront. com erro</div><div class="k-value">${totalProntErro.toLocaleString()}</div><div class="k-foot">No período</div></div>
+      <div class="card"><div class="k-label">Total erros</div><div class="k-value">${totalErros.toLocaleString()}</div><div class="k-foot">No período</div></div>
+      <div class="card"><div class="k-label">% c/ erro</div><div class="k-value">${taxa}%</div><div class="k-foot">No período</div></div>
+      <div class="card"><div class="k-label">Erros/pront.</div><div class="k-value">${errosPorPront}</div><div class="k-foot">No período</div></div>
+    `;
+
+    // Tabela de tendência
+    let tabelaHtml = `<table class="table"><thead><tr><th>Mês</th><th class="num">Prontuários</th><th class="num">c/ erro</th><th class="num">Erros</th></tr></thead><tbody>`;
+    filtrados.forEach(m => {
+      tabelaHtml += `<tr><td>${m.ym}</td><td class="num">${m.prontuarios}</td><td class="num">${m.prontuarios_com_erro}</td><td class="num">${m.erros}</td></tr>`;
+    });
+    tabelaHtml += `</tbody></table>`;
+    tabelaTendencia.innerHTML = tabelaHtml;
+
+    // Destaque comparativo (primeiro vs último mês do filtro)
+    if (filtrados.length >= 2) {
+      const primeiro = filtrados[0];
+      const ultimo = filtrados[filtrados.length - 1];
+      const pctPrimeiro = (primeiro.prontuarios_com_erro / primeiro.prontuarios * 100).toFixed(2);
+      const pctUltimo = (ultimo.prontuarios_com_erro / ultimo.prontuarios * 100).toFixed(2);
+      const errosPorProntPrimeiro = (primeiro.erros / primeiro.prontuarios).toFixed(2);
+      const errosPorProntUltimo = (ultimo.erros / ultimo.prontuarios).toFixed(2);
+
+      compareContainer.innerHTML = `
+        <div class="compare-card"><div class="compare-title">${primeiro.ym}</div><div class="compare-kpis">
+          <div><span class="k">Prontuários</span><span class="v">${primeiro.prontuarios}</span></div>
+          <div><span class="k">Erros</span><span class="v">${primeiro.erros}</span></div>
+          <div><span class="k">% com erro</span><span class="v">${pctPrimeiro}%</span></div>
+          <div><span class="k">Erros/pront.</span><span class="v">${errosPorProntPrimeiro}</span></div>
+        </div></div>
+        <div class="compare-card"><div class="compare-title">${ultimo.ym}</div><div class="compare-kpis">
+          <div><span class="k">Prontuários</span><span class="v">${ultimo.prontuarios}</span></div>
+          <div><span class="k">Erros</span><span class="v">${ultimo.erros}</span></div>
+          <div><span class="k">% com erro</span><span class="v">${pctUltimo}%</span></div>
+          <div><span class="k">Erros/pront.</span><span class="v">${errosPorProntUltimo}</span></div>
+        </div></div>
+      `;
+      const variacaoErros = ultimo.erros - primeiro.erros;
+      const sinal = variacaoErros >= 0 ? '+' : '';
+      calloutTexto.innerHTML = `<b>Leitura rápida:</b> de ${primeiro.ym} para ${ultimo.ym}, variação de <b>${sinal}${variacaoErros.toLocaleString()}</b> erros e mudança de <b>${(pctUltimo - pctPrimeiro).toFixed(2)} p.p.</b> na taxa de prontuários com erro.`;
+    } else {
+      compareContainer.innerHTML = `<div class="compare-card" style="grid-column:span2">Selecione um intervalo com pelo menos dois meses.</div>`;
+      calloutTexto.innerHTML = '';
+    }
+
+    indicadorFiltro.innerText = `mostrando: ${inicio} a ${fim}`;
+  }
+
+  // Inicial com valores padrão (Dez a Fev)
+  window.addEventListener('load', () => {
+    aplicarFiltro();
+  });
+
+  btnFiltro.addEventListener('click', aplicarFiltro);
+</script>
+</body>
+</html>
