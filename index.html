@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Auditoria Hospitalar · Apresentação Executiva com Filtro</title>
+  <title>Auditoria Hospitalar · Apresentação Executiva</title>
   <style>
     :root {
       --bg: #0b1220;
@@ -103,57 +103,8 @@
     }
     .footer { margin-top: 18px; color: var(--muted); font-size: 11px; text-align:center; }
     .bar-container { display: flex; align-items: center; gap: 6px; }
-    .bar { height: 6px; background: var(--accent2); border-radius: 4px; }
-
-    /* filtros */
-    .filtros {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 16px;
-      background: rgba(0,0,0,0.3);
-      padding: 14px 18px;
-      border-radius: 40px;
-      border: 1px solid var(--stroke);
-      margin-bottom: 10px;
-      align-items: center;
-    }
-    .filtro-group {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .filtro-group label {
-      font-size: 12px;
-      color: var(--muted);
-    }
-    select, .filtro-group input {
-      background: rgba(255,255,255,0.1);
-      border: 1px solid var(--stroke);
-      border-radius: 30px;
-      padding: 6px 12px;
-      color: white;
-      font-size: 13px;
-      outline: none;
-    }
-    select option { background: #1e2a3a; }
-    button {
-      background: var(--accent2);
-      border: none;
-      border-radius: 30px;
-      padding: 6px 18px;
-      font-weight: 600;
-      font-size: 12px;
-      color: #0b1220;
-      cursor: pointer;
-      border: 1px solid rgba(255,255,255,0.2);
-    }
-    button:hover { background: #2aa9e0; }
-    .tag {
-      background: rgba(255,255,255,0.1);
-      border-radius: 20px;
-      padding: 4px 12px;
-      font-size: 11px;
-      color: var(--muted);
+    .bar {
+      height: 6px; background: var(--accent2); border-radius: 4px;
     }
     @media (max-width: 1100px) {
       .kpis { grid-template-columns: repeat(2, minmax(0,1fr)); }
@@ -162,7 +113,6 @@
       .compare { grid-template-columns: 1fr; }
       .meta { text-align:left; }
       .header { align-items:flex-start; flex-direction:column; }
-      .filtros { flex-direction: column; align-items: stretch; }
     }
     @media print {
       body { background: #fff; color: #111; }
@@ -189,56 +139,87 @@
     </div>
   </div>
 
-  <!-- FILTRO INTERATIVO (por mês) -->
-  <div class="filtros">
-    <span class="tag">🔍 FILTRO DE PERÍODO (dados mensais)</span>
-    <div class="filtro-group">
-      <label>De:</label>
-      <select id="mesInicio">
-        <option value="2025-10">2025-10</option>
-        <option value="2025-11">2025-11</option>
-        <option value="2025-12" selected>2025-12</option>
-        <option value="2026-01">2026-01</option>
-        <option value="2026-02">2026-02</option>
-      </select>
+  <!-- KPIs principais (exatos do JSON) -->
+  <div class="grid kpis">
+    <div class="card">
+      <div class="k-label">Prontuários (total)</div>
+      <div class="k-value">1.017</div>
+      <div class="k-foot">Registros na tabela <code>prontuario</code></div>
     </div>
-    <div class="filtro-group">
-      <label>Até:</label>
-      <select id="mesFim">
-        <option value="2025-10">2025-10</option>
-        <option value="2025-11">2025-11</option>
-        <option value="2025-12">2025-12</option>
-        <option value="2026-01">2026-01</option>
-        <option value="2026-02" selected>2026-02</option>
-      </select>
+    <div class="card">
+      <div class="k-label">Prontuários com erro</div>
+      <div class="k-value">940</div>
+      <div class="k-foot">Distinct prontuário com registros em <code>erro</code></div>
     </div>
-    <button id="aplicarFiltro">Aplicar filtro</button>
-    <span class="tag" id="indicadorFiltro">mostrando período selecionado</span>
+    <div class="card">
+      <div class="k-label">Total de erros</div>
+      <div class="k-value">4.885</div>
+      <div class="k-foot">Registros na tabela <code>erro</code></div>
+    </div>
+    <div class="card">
+      <div class="k-label">% prontuários com erro</div>
+      <div class="k-value">92,43%</div>
+      <div class="k-foot">Prontuários com erro ÷ prontuários</div>
+    </div>
+    <div class="card">
+      <div class="k-label">Erros por prontuário</div>
+      <div class="k-value">4,80</div>
+      <div class="k-foot">Total erros ÷ prontuários</div>
+    </div>
   </div>
 
-  <!-- KPIS (serão atualizados via JS) -->
-  <div class="grid kpis" id="kpisContainer">
-    <!-- preenchido por js -->
+  <!-- Destaque Dez vs Jan (correto) -->
+  <div class="section">
+    <h2 class="section-title">Destaque do período</h2>
+    <p class="section-sub">Comparativo objetivo de Dezembro/2025 vs Janeiro/2026 (com base em <code>fim_auditoria</code> / <code>recebimento_prontuario</code> / <code>data_criacao</code>).</p>
+    <div class="compare">
+      <div class="compare-card">
+        <div class="compare-title">Dezembro/2025</div>
+        <div class="compare-kpis">
+          <div><span class="k">Prontuários</span><span class="v">348</span></div>
+          <div><span class="k">Erros</span><span class="v">2.125</span></div>
+          <div><span class="k">% com erro</span><span class="v">89,94%</span></div>
+          <div><span class="k">Erros/pront.</span><span class="v">6,11</span></div>
+        </div>
+      </div>
+      <div class="compare-card">
+        <div class="compare-title">Janeiro/2026</div>
+        <div class="compare-kpis">
+          <div><span class="k">Prontuários</span><span class="v">206</span></div>
+          <div><span class="k">Erros</span><span class="v">1.179</span></div>
+          <div><span class="k">% com erro</span><span class="v">94,17%</span></div>
+          <div><span class="k">Erros/pront.</span><span class="v">5,72</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="callout" style="margin-top:12px">
+      <b>Leitura rápida:</b> de Dez/2025 para Jan/2026, houve variação de <b>-946</b> erros e redução no volume de erros, com mudança de +4,23 p.p. na taxa de prontuários com erro.
+    </div>
   </div>
 
-  <!-- Destaque Dez vs Jan (será atualizado) -->
-  <div class="section" id="destaqueSection">
-    <h2 class="section-title">Destaque do período (filtrado)</h2>
-    <p class="section-sub">Comparativo entre o primeiro e o último mês do intervalo selecionado.</p>
-    <div class="compare" id="compareContainer"></div>
-    <div class="callout" id="calloutTexto" style="margin-top:12px"></div>
-  </div>
-
-  <!-- Tendência mensal (filtrada) + SLAs (fixos) -->
+  <!-- Tendência mensal (tabela) + SLAs -->
   <div class="section grid two">
-    <div class="card" id="tendenciaCard">
-      <h3 class="section-title" style="margin-top:0">Tendência mensal (filtrada)</h3>
-      <p class="section-sub">Série histórica no intervalo selecionado.</p>
-      <div style="overflow-x: auto;" id="tabelaTendencia"></div>
+    <div class="card">
+      <h3 class="section-title" style="margin-top:0">Tendência mensal</h3>
+      <p class="section-sub">Série histórica (prontuários, prontuários com erro e total de erros).</p>
+      <div style="overflow-x: auto;">
+        <table class="table">
+          <thead>
+            <tr><th>Mês</th><th class="num">Prontuários</th><th class="num">c/ erro</th><th class="num">Erros</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>2025-10</td><td class="num">87</td><td class="num">87</td><td class="num">438</td></tr>
+            <tr><td>2025-11</td><td class="num">182</td><td class="num">153</td><td class="num">643</td></tr>
+            <tr><td>2025-12</td><td class="num">348</td><td class="num">313</td><td class="num">2.125</td></tr>
+            <tr><td>2026-01</td><td class="num">206</td><td class="num">194</td><td class="num">1.179</td></tr>
+            <tr><td>2026-02</td><td class="num">16</td><td class="num">15</td><td class="num">72</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
     <div class="card">
       <h3 class="section-title" style="margin-top:0">SLAs e tempos (dados válidos)</h3>
-      <p class="section-sub">Intervalos não‑negativos, outliers removidos (totais globais).</p>
+      <p class="section-sub">Intervalos não‑negativos, outliers removidos.</p>
       <div style="overflow:auto">
         <table class="table">
           <thead><tr><th>Métrica</th><th class="num">Mediana</th><th class="num">Média</th><th class="num">P90</th><th class="muted">Amostra</th></tr></thead>
@@ -256,10 +237,10 @@
     </div>
   </div>
 
-  <!-- Top setor / convênio / tipo (fixos - totais globais) -->
+  <!-- Top setor / convênio / tipo (substituem as imagens) -->
   <div class="section grid three">
     <div class="card">
-      <h3 class="section-title" style="margin-top:0">Erros por setor (global)</h3>
+      <h3 class="section-title" style="margin-top:0">Erros por setor</h3>
       <p class="section-sub">Top (dados disponíveis)</p>
       <table class="table">
         <thead><tr><th>Setor</th><th class="num">Erros</th></tr></thead>
@@ -270,7 +251,7 @@
       </table>
     </div>
     <div class="card">
-      <h3 class="section-title" style="margin-top:0">Erros por convênio (global)</h3>
+      <h3 class="section-title" style="margin-top:0">Erros por convênio</h3>
       <p class="section-sub">Top 10</p>
       <div style="overflow:auto; max-height:200px">
         <table class="table">
@@ -291,7 +272,7 @@
       </div>
     </div>
     <div class="card">
-      <h3 class="section-title" style="margin-top:0">Tipos de erro (global)</h3>
+      <h3 class="section-title" style="margin-top:0">Tipos de erro</h3>
       <p class="section-sub">Top</p>
       <table class="table">
         <thead><tr><th>Tipo</th><th class="num">Erros</th></tr></thead>
@@ -306,17 +287,70 @@
     </div>
   </div>
 
-  <!-- Causas (global) e responsáveis (global) -->
+  <!-- Pareto de causas (agora tabela com percentuais corretos) + lista detalhada -->
   <div class="section grid two">
     <div class="card">
-      <h3 class="section-title" style="margin-top:0">Pareto de causas (global)</h3>
-      <p class="section-sub">Top 15 causas (base total 4.885 erros)</p>
-      <div style="overflow:auto; max-height:360px" id="tabelaCausasGlobal">
-        <!-- será preenchido via js com os dados fixos, mas já está inline -->
+      <h3 class="section-title" style="margin-top:0">Pareto de causas</h3>
+      <p class="section-sub">Top 15 causas e acumulado (base: total de erros = 4.885)</p>
+      <div style="overflow:auto; max-height:360px">
+        <table class="table">
+          <thead>
+            <tr><th>Causa</th><th class="num">Erros</th><th class="num">%</th><th class="num">% acum.</th></tr>
+          </thead>
+          <tbody>
+            <!-- dados extraídos do JSON, com percentuais calculados sobre 4885 -->
+            <tr><td>MATERIAL NÃO COBRADO</td><td class="num">1.380</td><td class="num">28,25%</td><td class="num">28,25%</td></tr>
+            <tr><td>MEDICAÇÃO NÃO COBRADA</td><td class="num">1.099</td><td class="num">22,50%</td><td class="num">50,75%</td></tr>
+            <tr><td>FALTA IMPRESSÃO RELATORIOS CENTRO CIRURGICO</td><td class="num">596</td><td class="num">12,20%</td><td class="num">62,95%</td></tr>
+            <tr><td>COBRANÇA INDEVIDA</td><td class="num">482</td><td class="num">9,87%</td><td class="num">72,82%</td></tr>
+            <tr><td>NÃO COBRADO TX ALIMENTAÇÃO</td><td class="num">183</td><td class="num">3,75%</td><td class="num">76,57%</td></tr>
+            <tr><td>FALTA IMPRESSÃO EVOLUÇÃO MÉDICA</td><td class="num">146</td><td class="num">2,99%</td><td class="num">79,56%</td></tr>
+            <tr><td>COBRANÇA INDEVIDA (2)</td><td class="num">86</td><td class="num">1,76%</td><td class="num">81,32%</td></tr>
+            <tr><td>FALTA COBRAR FIO CIRURGICO</td><td class="num">86</td><td class="num">1,76%</td><td class="num">83,08%</td></tr>
+            <tr><td>FALTA IMPRESSÃO RELATÓRIO DE ENFERMAGEM</td><td class="num">83</td><td class="num">1,70%</td><td class="num">84,78%</td></tr>
+            <tr><td>GUIA SEM ASSINATURA</td><td class="num">72</td><td class="num">1,47%</td><td class="num">86,25%</td></tr>
+            <tr><td>FALTA IMPRESSÃO RELATORIO DE ENFERMAGEM</td><td class="num">63</td><td class="num">1,29%</td><td class="num">87,54%</td></tr>
+            <tr><td>FALTA IMPRESSÃO EVOLUÇÃO MEDICA</td><td class="num">51</td><td class="num">1,04%</td><td class="num">88,58%</td></tr>
+            <tr><td>FALTA IMPRESSÃO RELATÓRIO DE ENFERMAGEM POSTO</td><td class="num">49</td><td class="num">1,00%</td><td class="num">89,58%</td></tr>
+            <tr><td>FALTA BOLAR OU CHECAR MEDICAÇÃO</td><td class="num">43</td><td class="num">0,88%</td><td class="num">90,46%</td></tr>
+            <tr><td>TX ALIMENTAÇÃO</td><td class="num">42</td><td class="num">0,86%</td><td class="num">91,32%</td></tr>
+          </tbody>
+        </table>
       </div>
+      <p class="muted" style="margin-top:8px">* acumulado considera as causas listadas; as demais somam 8,68%.</p>
     </div>
     <div class="card">
-      <h3 class="section-title" style="margin-top:0">Responsáveis (global)</h3>
+      <h3 class="section-title" style="margin-top:0">Top causas (tabela completa)</h3>
+      <p class="section-sub">Base: tabela <code>erro</code> agrupada por <code>causa</code>.</p>
+      <div style="overflow:auto; max-height:360px">
+        <table class="table">
+          <thead><tr><th>Causa</th><th class="num">Erros</th><th class="num">% (total 4.885)</th></tr></thead>
+          <tbody>
+            <tr><td>MATERIAL NÃO COBRADO</td><td class="num">1.380</td><td class="num">28,25%</td></tr>
+            <tr><td>MEDICAÇÃO NÃO COBRADA</td><td class="num">1.099</td><td class="num">22,50%</td></tr>
+            <tr><td>FALTA IMPRESSÃO RELATORIOS CENTRO CIRURGICO</td><td class="num">596</td><td class="num">12,20%</td></tr>
+            <tr><td>COBRANÇA INDEVIDA </td><td class="num">482</td><td class="num">9,87%</td></tr>
+            <tr><td>NÃO COBRADO TX ALIMENTAÇÃO</td><td class="num">183</td><td class="num">3,75%</td></tr>
+            <tr><td>FALTA IMPRESSÃO EVOLUÇÃO MÉDICA </td><td class="num">146</td><td class="num">2,99%</td></tr>
+            <tr><td>COBRANÇA INDEVIDA</td><td class="num">86</td><td class="num">1,76%</td></tr>
+            <tr><td>FALTA COBRAR FIO CIRURGICO</td><td class="num">86</td><td class="num">1,76%</td></tr>
+            <tr><td>FALTA IMPRESSÃO RELATÓRIO DE ENFERMAGEM</td><td class="num">83</td><td class="num">1,70%</td></tr>
+            <tr><td>GUIA SEM ASSINATURA</td><td class="num">72</td><td class="num">1,47%</td></tr>
+            <tr><td>FALTA IMPRESSÃO RELATORIO DE ENFERMAGEM</td><td class="num">63</td><td class="num">1,29%</td></tr>
+            <tr><td>FALTA IMPRESSÃO EVOLUÇÃO MEDICA</td><td class="num">51</td><td class="num">1,04%</td></tr>
+            <tr><td>FALTA IMPRESSÃO RELATÓRIO DE ENFERMAGEM POSTO</td><td class="num">49</td><td class="num">1,00%</td></tr>
+            <tr><td>FALTA BOLAR OU CHECAR MEDICAÇÃO </td><td class="num">43</td><td class="num">0,88%</td></tr>
+            <tr><td>TX ALIMENTAÇÃO</td><td class="num">42</td><td class="num">0,86%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Responsáveis e próximos passos -->
+  <div class="section grid two">
+    <div class="card">
+      <h3 class="section-title" style="margin-top:0">Responsáveis (quando informado)</h3>
       <p class="section-sub">Top 10 responsáveis vinculados no registro do erro.</p>
       <div style="overflow:auto">
         <table class="table">
@@ -336,175 +370,23 @@
         </table>
       </div>
     </div>
-  </div>
-
-  <!-- Próximos passos -->
-  <div class="section grid two">
     <div class="card">
       <h3 class="section-title" style="margin-top:0">Próximos passos sugeridos</h3>
       <p class="section-sub">Com base no seu banco, dá para evoluir para governança e redução de retrabalho.</p>
       <ol style="margin:0; padding-left: 18px; color: rgba(255,255,255,.86); font-size: 12px; line-height:1.55">
         <li><b>Padronizar datas</b> (recebimento, fim auditoria, faturamento) e bloquear inversões.</li>
-        <li><b>Completar dicionários</b>: <code>categoria_erro</code> está vazio — preencher e vincular.</li>
+        <li><b>Completar dicionários</b>: <code>categoria_erro</code> está vazio — preencher e vincular no <code>erro.categoria_erro_id</code>.</li>
         <li><b>Plano 80/20</b>: atacar as 3–5 causas líderes (Pareto) com ações e re-auditoria mensal.</li>
         <li><b>Metas</b>: reduzir “erros por prontuário” e “% prontuários com erro” por setor/convênio.</li>
         <li><b>Rotina executiva</b>: gerar esta apresentação mensal automaticamente (HTML/PDF).</li>
       </ol>
     </div>
-    <div class="card">
-      <h3 class="section-title" style="margin-top:0">Nota sobre o filtro</h3>
-      <p class="section-sub">O filtro de período atualiza apenas os KPIs, a tabela de tendência mensal e o comparativo de destaque. As demais seções (setor, convênio, causas, responsáveis) mostram os totais globais, pois o JSON não contém detalhamento mensal para essas categorias.</p>
-    </div>
   </div>
 
   <div class="footer">
-    Arquivo estático (HTML+JS) · Gerado a partir do seu <code>auditoria.db</code> · Filtro interativo aplicado.
+    Arquivo estático (HTML) · Gerado a partir do seu <code>auditoria.db</code> · Todos os dados inline, sem imagens externas.
   </div>
+
 </div>
-
-<script>
-  // Dados brutos do JSON (embutidos)
-  const dadosCompletos = {
-    kpis: {
-      total_prontuarios: 1017,
-      prontuarios_com_erro: 940,
-      total_erros: 4885,
-      taxa_prontuario_com_erro: 92.42871189773845,
-      erros_por_prontuario: 4.803343166175025
-    },
-    monthly: [
-      { ym: "2025-10", prontuarios: 87, prontuarios_com_erro: 87, erros: 438 },
-      { ym: "2025-11", prontuarios: 182, prontuarios_com_erro: 153, erros: 643 },
-      { ym: "2025-12", prontuarios: 348, prontuarios_com_erro: 313, erros: 2125 },
-      { ym: "2026-01", prontuarios: 206, prontuarios_com_erro: 194, erros: 1179 },
-      { ym: "2026-02", prontuarios: 16, prontuarios_com_erro: 15, erros: 72 }
-    ],
-    top_causa: [
-      { causa: "MATERIAL NÃO COBRADO", erros: 1380 },
-      { causa: "MEDICAÇÃO NÃO COBRADA", erros: 1099 },
-      { causa: "FALTA IMPRESSÃO RELATORIOS CENTRO CIRURGICO", erros: 596 },
-      { causa: "COBRANÇA INDEVIDA ", erros: 482 },
-      { causa: "NÃO COBRADO TX ALIMENTAÇÃO", erros: 183 },
-      { causa: "FALTA IMPRESSÃO EVOLUÇÃO MÉDICA ", erros: 146 },
-      { causa: "COBRANÇA INDEVIDA", erros: 86 },
-      { causa: "FALTA COBRAR FIO CIRURGICO", erros: 86 },
-      { causa: "FALTA IMPRESSÃO RELATÓRIO DE ENFERMAGEM", erros: 83 },
-      { causa: "GUIA SEM ASSINATURA", erros: 72 },
-      { causa: "FALTA IMPRESSÃO RELATORIO DE ENFERMAGEM", erros: 63 },
-      { causa: "FALTA IMPRESSÃO EVOLUÇÃO MEDICA", erros: 51 },
-      { causa: "FALTA IMPRESSÃO RELATÓRIO DE ENFERMAGEM POSTO", erros: 49 },
-      { causa: "FALTA BOLAR OU CHECAR MEDICAÇÃO ", erros: 43 },
-      { causa: "TX ALIMENTAÇÃO", erros: 42 }
-    ]
-  };
-
-  // elementos
-  const mesInicio = document.getElementById('mesInicio');
-  const mesFim = document.getElementById('mesFim');
-  const btnFiltro = document.getElementById('aplicarFiltro');
-  const kpisContainer = document.getElementById('kpisContainer');
-  const tabelaTendencia = document.getElementById('tabelaTendencia');
-  const compareContainer = document.getElementById('compareContainer');
-  const calloutTexto = document.getElementById('calloutTexto');
-  const indicadorFiltro = document.getElementById('indicadorFiltro');
-
-  // Preencher tabela de causas global (uma vez)
-  function preencherCausas() {
-    const container = document.getElementById('tabelaCausasGlobal');
-    if (!container) return;
-    let html = `<table class="table"><thead><tr><th>Causa</th><th class="num">Erros</th><th class="num">%</th></tr></thead><tbody>`;
-    const totalErros = dadosCompletos.kpis.total_erros;
-    dadosCompletos.top_causa.forEach(item => {
-      const pct = (item.erros / totalErros * 100).toFixed(2);
-      html += `<tr><td>${item.causa}</td><td class="num">${item.erros.toLocaleString()}</td><td class="num">${pct}%</td></tr>`;
-    });
-    html += `</tbody></table><p class="muted" style="margin-top:8px">* percentuais sobre total global (4.885 erros).</p>`;
-    container.innerHTML = html;
-  }
-  preencherCausas();
-
-  // Função que filtra monthly com base no intervalo
-  function getMonthlyFiltrado(inicio, fim) {
-    const meses = dadosCompletos.monthly;
-    const idxInicio = meses.findIndex(m => m.ym === inicio);
-    const idxFim = meses.findIndex(m => m.ym === fim);
-    if (idxInicio === -1 || idxFim === -1 || idxInicio > idxFim) return [];
-    return meses.slice(idxInicio, idxFim + 1);
-  }
-
-  // Atualiza KPIs, tabela tendência e destaque
-  function aplicarFiltro() {
-    const inicio = mesInicio.value;
-    const fim = mesFim.value;
-    const filtrados = getMonthlyFiltrado(inicio, fim);
-
-    // calcular totais do período filtrado
-    let totalPront = 0, totalProntErro = 0, totalErros = 0;
-    filtrados.forEach(m => {
-      totalPront += m.prontuarios;
-      totalProntErro += m.prontuarios_com_erro;
-      totalErros += m.erros;
-    });
-    const taxa = totalPront > 0 ? (totalProntErro / totalPront * 100).toFixed(2) : 0;
-    const errosPorPront = totalPront > 0 ? (totalErros / totalPront).toFixed(2) : 0;
-
-    // Atualizar KPIs
-    kpisContainer.innerHTML = `
-      <div class="card"><div class="k-label">Prontuários (filtro)</div><div class="k-value">${totalPront.toLocaleString()}</div><div class="k-foot">No período</div></div>
-      <div class="card"><div class="k-label">Pront. com erro</div><div class="k-value">${totalProntErro.toLocaleString()}</div><div class="k-foot">No período</div></div>
-      <div class="card"><div class="k-label">Total erros</div><div class="k-value">${totalErros.toLocaleString()}</div><div class="k-foot">No período</div></div>
-      <div class="card"><div class="k-label">% c/ erro</div><div class="k-value">${taxa}%</div><div class="k-foot">No período</div></div>
-      <div class="card"><div class="k-label">Erros/pront.</div><div class="k-value">${errosPorPront}</div><div class="k-foot">No período</div></div>
-    `;
-
-    // Tabela de tendência
-    let tabelaHtml = `<table class="table"><thead><tr><th>Mês</th><th class="num">Prontuários</th><th class="num">c/ erro</th><th class="num">Erros</th></tr></thead><tbody>`;
-    filtrados.forEach(m => {
-      tabelaHtml += `<tr><td>${m.ym}</td><td class="num">${m.prontuarios}</td><td class="num">${m.prontuarios_com_erro}</td><td class="num">${m.erros}</td></tr>`;
-    });
-    tabelaHtml += `</tbody></table>`;
-    tabelaTendencia.innerHTML = tabelaHtml;
-
-    // Destaque comparativo (primeiro vs último mês do filtro)
-    if (filtrados.length >= 2) {
-      const primeiro = filtrados[0];
-      const ultimo = filtrados[filtrados.length - 1];
-      const pctPrimeiro = (primeiro.prontuarios_com_erro / primeiro.prontuarios * 100).toFixed(2);
-      const pctUltimo = (ultimo.prontuarios_com_erro / ultimo.prontuarios * 100).toFixed(2);
-      const errosPorProntPrimeiro = (primeiro.erros / primeiro.prontuarios).toFixed(2);
-      const errosPorProntUltimo = (ultimo.erros / ultimo.prontuarios).toFixed(2);
-
-      compareContainer.innerHTML = `
-        <div class="compare-card"><div class="compare-title">${primeiro.ym}</div><div class="compare-kpis">
-          <div><span class="k">Prontuários</span><span class="v">${primeiro.prontuarios}</span></div>
-          <div><span class="k">Erros</span><span class="v">${primeiro.erros}</span></div>
-          <div><span class="k">% com erro</span><span class="v">${pctPrimeiro}%</span></div>
-          <div><span class="k">Erros/pront.</span><span class="v">${errosPorProntPrimeiro}</span></div>
-        </div></div>
-        <div class="compare-card"><div class="compare-title">${ultimo.ym}</div><div class="compare-kpis">
-          <div><span class="k">Prontuários</span><span class="v">${ultimo.prontuarios}</span></div>
-          <div><span class="k">Erros</span><span class="v">${ultimo.erros}</span></div>
-          <div><span class="k">% com erro</span><span class="v">${pctUltimo}%</span></div>
-          <div><span class="k">Erros/pront.</span><span class="v">${errosPorProntUltimo}</span></div>
-        </div></div>
-      `;
-      const variacaoErros = ultimo.erros - primeiro.erros;
-      const sinal = variacaoErros >= 0 ? '+' : '';
-      calloutTexto.innerHTML = `<b>Leitura rápida:</b> de ${primeiro.ym} para ${ultimo.ym}, variação de <b>${sinal}${variacaoErros.toLocaleString()}</b> erros e mudança de <b>${(pctUltimo - pctPrimeiro).toFixed(2)} p.p.</b> na taxa de prontuários com erro.`;
-    } else {
-      compareContainer.innerHTML = `<div class="compare-card" style="grid-column:span2">Selecione um intervalo com pelo menos dois meses.</div>`;
-      calloutTexto.innerHTML = '';
-    }
-
-    indicadorFiltro.innerText = `mostrando: ${inicio} a ${fim}`;
-  }
-
-  // Inicial com valores padrão (Dez a Fev)
-  window.addEventListener('load', () => {
-    aplicarFiltro();
-  });
-
-  btnFiltro.addEventListener('click', aplicarFiltro);
-</script>
 </body>
 </html>
