@@ -3,258 +3,475 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Auditoria Hospitalar · Apresentação Executiva</title>
+  <title>Auditoria Hospitalar · Painel Executivo</title>
   <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+    }
+
     :root {
-      --bg: #0b1220;
-      --panel: rgba(255,255,255,.06);
-      --stroke: rgba(255,255,255,.12);
-      --text: rgba(255,255,255,.92);
-      --muted: rgba(255,255,255,.65);
-      --accent: #22c55e;
-      --accent2: #38bdf8;
-      --warn: #fbbf24;
+      --bg: #0a0f1a;
+      --surface: rgba(18, 25, 40, 0.85);
+      --surface-hover: rgba(30, 40, 60, 0.9);
+      --border: rgba(72, 85, 106, 0.35);
+      --text-primary: #f0f3fa;
+      --text-secondary: #a6b3cf;
+      --accent-emerald: #2dd4bf;
+      --accent-blue: #3b82f6;
+      --accent-amber: #f59e0b;
+      --accent-rose: #f43f5e;
+      --chart-1: #2dd4bf;
+      --chart-2: #3b82f6;
+      --chart-3: #f59e0b;
+      --gradient-1: linear-gradient(145deg, rgba(45,212,191,0.15) 0%, rgba(59,130,246,0.1) 100%);
     }
-    * { box-sizing: border-box; }
+
     body {
-      margin:0;
-      font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(1200px 700px at 20% 10%, rgba(56,189,248,.14), transparent 60%),
-        radial-gradient(1000px 700px at 80% 20%, rgba(34,197,94,.10), transparent 55%),
-        radial-gradient(800px 600px at 60% 90%, rgba(251,191,36,.10), transparent 60%),
-        var(--bg);
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.5;
+      padding: 1.5rem;
+      min-height: 100vh;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(45,212,191,0.08) 0%, transparent 35%),
+        radial-gradient(circle at 90% 70%, rgba(59,130,246,0.08) 0%, transparent 40%),
+        radial-gradient(circle at 30% 80%, rgba(245,158,11,0.05) 0%, transparent 45%);
     }
-    a { color: inherit; }
-    .container { max-width: 1180px; margin: 0 auto; padding: 28px 18px 40px; }
+
+    .dashboard {
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    /* Header com filtro */
     .header {
-      display:flex; align-items:flex-end; justify-content:space-between; gap: 18px;
-      padding: 18px 18px 14px; border:1px solid var(--stroke); border-radius: 18px;
-      background: linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+      background: rgba(18, 25, 40, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: 2rem;
+      padding: 1.5rem 2rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      box-shadow: 0 20px 35px -10px rgba(0,0,0,0.5);
     }
+
     .brand {
-      display:flex; gap: 14px; align-items:center;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
     }
-    .mark {
-      width: 46px; height: 46px; border-radius: 14px;
-      display:grid; place-items:center;
-      font-weight: 800; letter-spacing:.02em;
-      background: linear-gradient(135deg, rgba(56,189,248,.22), rgba(34,197,94,.18));
-      border: 1px solid var(--stroke);
+
+    .logo {
+      width: 52px;
+      height: 52px;
+      background: var(--gradient-1);
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.5rem;
+      border: 1px solid rgba(45,212,191,0.4);
+      color: var(--accent-emerald);
     }
-    .h1 { margin:0; font-size: 22px; line-height: 1.15; letter-spacing: -0.02em; }
-    .sub { margin: 6px 0 0; color: var(--muted); font-size: 13px; }
-    .meta { text-align:right; color: var(--muted); font-size: 12px; }
+
+    .title h1 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #fff, #b0c4de);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .title p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      background: rgba(0,0,0,0.25);
+      padding: 0.5rem;
+      border-radius: 3rem;
+      border: 1px solid var(--border);
+    }
+
+    .filter-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      padding: 0.5rem 1.2rem;
+      border-radius: 2rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .filter-btn:hover {
+      background: rgba(255,255,255,0.1);
+      color: white;
+    }
+
+    .filter-btn.active {
+      background: var(--accent-emerald);
+      color: #0a0f1a;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(45,212,191,0.4);
+    }
+
+    /* Cards de KPI */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .kpi-card {
+      background: rgba(18, 25, 40, 0.6);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+      border-radius: 1.5rem;
+      padding: 1.5rem 1.2rem;
+      transition: transform 0.1s, background 0.2s;
+    }
+
+    .kpi-card:hover {
+      background: rgba(30, 40, 60, 0.8);
+      transform: translateY(-2px);
+    }
+
+    .kpi-label {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .kpi-value {
+      font-size: 2.5rem;
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 0.25rem;
+    }
+
+    .kpi-trend {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
     .badge {
-      display:inline-flex; align-items:center; gap: 8px;
-      padding: 6px 10px; border-radius: 999px; border: 1px solid var(--stroke);
-      background: rgba(255,255,255,.04);
+      background: rgba(45,212,191,0.2);
+      color: var(--accent-emerald);
+      border-radius: 2rem;
+      padding: 0.2rem 0.8rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-left: 0.5rem;
     }
-    .grid { display:grid; gap: 14px; }
-    .kpis { grid-template-columns: repeat(5, minmax(0, 1fr)); margin-top: 14px; }
-    .card {
-      padding: 14px 14px 12px;
-      border: 1px solid var(--stroke);
-      border-radius: 16px;
-      background: rgba(255,255,255,.05);
+
+    /* Seções */
+    .section {
+      background: rgba(18, 25, 40, 0.6);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+      border-radius: 2rem;
+      padding: 1.8rem;
+      margin-bottom: 1.5rem;
     }
-    .k-label { color: var(--muted); font-size: 12px; }
-    .k-value { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; margin-top: 6px; }
-    .k-foot { color: var(--muted); font-size: 11px; margin-top: 4px; }
-    .section { margin-top: 16px; }
-    .section-title { font-size: 14px; font-weight: 800; margin: 0 0 8px; }
-    .section-sub { margin: 0 0 12px; color: var(--muted); font-size: 12px; }
-    .two { grid-template-columns: 1.15fr .85fr; }
-    .three { grid-template-columns: 1fr 1fr 1fr; }
-    .table {
+
+    .section-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .section-sub {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    /* Tabelas modernas */
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: 1.2rem;
+      background: rgba(0,0,0,0.2);
+    }
+
+    table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 12px;
+      font-size: 0.9rem;
     }
-    .table th, .table td {
-      padding: 8px 8px;
-      border-bottom: 1px solid rgba(255,255,255,.10);
-      vertical-align: top;
+
+    th {
+      text-align: left;
+      padding: 1rem 1rem 0.8rem 1rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+      border-bottom: 1px solid var(--border);
     }
-    .table th { text-align:left; color: rgba(255,255,255,.78); font-weight: 600; }
-    .table td.num { text-align:right; font-variant-numeric: tabular-nums; }
-    .muted { color: var(--muted); }
-    .compare {
-      display:grid; grid-template-columns: 1fr 1fr; gap: 12px;
+
+    td {
+      padding: 0.8rem 1rem;
+      border-bottom: 1px solid rgba(72,85,106,0.2);
     }
-    .compare-card {
-      border: 1px solid var(--stroke);
-      border-radius: 16px;
-      background: rgba(255,255,255,.05);
-      padding: 14px;
+
+    td.num {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
     }
-    .compare-title { font-weight: 900; letter-spacing:-.02em; }
-    .compare-kpis { display:grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-    .compare-kpis .k { display:block; color: var(--muted); font-size: 11px; }
-    .compare-kpis .v { display:block; font-weight: 800; margin-top: 2px; font-variant-numeric: tabular-nums; }
-    .callout {
-      border: 1px solid rgba(251,191,36,.35);
-      background: rgba(251,191,36,.08);
-      border-radius: 16px;
-      padding: 12px 14px;
-      color: rgba(255,255,255,.9);
-      font-size: 12px;
+
+    .progress-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
     }
-    .footer { margin-top: 18px; color: var(--muted); font-size: 11px; text-align:center; }
-    .bar-container { display: flex; align-items: center; gap: 6px; }
+
     .bar {
-      height: 6px; background: var(--accent2); border-radius: 4px;
+      height: 8px;
+      background: var(--accent-emerald);
+      border-radius: 4px;
+      min-width: 4px;
     }
-    @media (max-width: 1100px) {
-      .kpis { grid-template-columns: repeat(2, minmax(0,1fr)); }
-      .two { grid-template-columns: 1fr; }
-      .three { grid-template-columns: 1fr; }
-      .compare { grid-template-columns: 1fr; }
-      .meta { text-align:left; }
-      .header { align-items:flex-start; flex-direction:column; }
+
+    .bar-bg {
+      flex: 1;
+      height: 8px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 4px;
     }
-    @media print {
-      body { background: #fff; color: #111; }
-      :root { --text:#111; --muted:#444; --stroke:#ddd; }
-      .card, .header, .compare-card, .callout { background:#fff; }
+
+    /* Destaque comparativo */
+    .compare-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .compare-card {
+      background: rgba(0,0,0,0.3);
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      border: 1px solid var(--border);
+    }
+
+    .compare-card h3 {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      color: var(--accent-amber);
+    }
+
+    .compare-metrics {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .metric small {
+      color: var(--text-secondary);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+    }
+
+    .metric .value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .callout {
+      background: rgba(245,158,11,0.12);
+      border: 1px solid rgba(245,158,11,0.3);
+      border-radius: 1.2rem;
+      padding: 1.2rem;
+      margin-top: 1rem;
+      color: #fcd34d;
+    }
+
+    .footer {
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      margin-top: 2rem;
+    }
+
+    @media (max-width: 900px) {
+      .grid-2, .grid-3 {
+        grid-template-columns: 1fr;
+      }
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
     }
   </style>
 </head>
 <body>
-<div class="container">
+<div class="dashboard">
 
-  <!-- cabeçalho com dados do JSON -->
+  <!-- Cabeçalho com filtro -->
   <div class="header">
     <div class="brand">
-      <div class="mark">AH</div>
-      <div>
-        <h1 class="h1">Auditoria Hospitalar · Apresentação Executiva</h1>
-        <p class="sub">Base: <b>1.017</b> prontuários e <b>4.885</b> erros (SQLite).</p>
+      <div class="logo">AH</div>
+      <div class="title">
+        <h1>Auditoria Executiva</h1>
+        <p>Base: 1.017 prontuários · 4.885 erros · SQLite</p>
       </div>
     </div>
-    <div class="meta">
-      <div class="badge">Atualizado com dados do seu banco</div>
-      <div style="margin-top:8px">Período detectado: <b>2025-10</b> → <b>2026-02</b></div>
+    <div class="filter-bar" id="monthFilter">
+      <button class="filter-btn active" data-month="all">Todos</button>
+      <button class="filter-btn" data-month="2025-10">Out/25</button>
+      <button class="filter-btn" data-month="2025-11">Nov/25</button>
+      <button class="filter-btn" data-month="2025-12">Dez/25</button>
+      <button class="filter-btn" data-month="2026-01">Jan/26</button>
+      <button class="filter-btn" data-month="2026-02">Fev/26</button>
     </div>
   </div>
 
-  <!-- KPIs principais (exatos do JSON) -->
-  <div class="grid kpis">
-    <div class="card">
-      <div class="k-label">Prontuários (total)</div>
-      <div class="k-value">1.017</div>
-      <div class="k-foot">Registros na tabela <code>prontuario</code></div>
+  <!-- KPIs principais com totais filtrados (atualizados via JS) -->
+  <div class="kpi-grid" id="kpiMain">
+    <div class="kpi-card">
+      <div class="kpi-label">📋 Prontuários</div>
+      <div class="kpi-value" id="kpiProntuarios">1.017</div>
+      <div class="kpi-trend">Total na base</div>
     </div>
-    <div class="card">
-      <div class="k-label">Prontuários com erro</div>
-      <div class="k-value">940</div>
-      <div class="k-foot">Distinct prontuário com registros em <code>erro</code></div>
+    <div class="kpi-card">
+      <div class="kpi-label">⚠️ Pront. com erro</div>
+      <div class="kpi-value" id="kpiComErro">940</div>
+      <div class="kpi-trend">92,4% do total</div>
     </div>
-    <div class="card">
-      <div class="k-label">Total de erros</div>
-      <div class="k-value">4.885</div>
-      <div class="k-foot">Registros na tabela <code>erro</code></div>
+    <div class="kpi-card">
+      <div class="kpi-label">🔴 Total de erros</div>
+      <div class="kpi-value" id="kpiErros">4.885</div>
+      <div class="kpi-trend">média 4,8 / pront.</div>
     </div>
-    <div class="card">
-      <div class="k-label">% prontuários com erro</div>
-      <div class="k-value">92,43%</div>
-      <div class="k-foot">Prontuários com erro ÷ prontuários</div>
+    <div class="kpi-card">
+      <div class="kpi-label">📊 Erros por pront.</div>
+      <div class="kpi-value" id="kpiErrosPorPront">4,80</div>
+      <div class="kpi-trend">média geral</div>
     </div>
-    <div class="card">
-      <div class="k-label">Erros por prontuário</div>
-      <div class="k-value">4,80</div>
-      <div class="k-foot">Total erros ÷ prontuários</div>
+    <div class="kpi-card">
+      <div class="kpi-label">⏱️ SLA (mediana)</div>
+      <div class="kpi-value" id="kpiSla">8,0</div>
+      <div class="kpi-trend">dias alta → fat.</div>
     </div>
   </div>
 
-  <!-- Destaque Dez vs Jan (correto) -->
+  <!-- Filtro ativo - totais dinâmicos -->
+  <div class="section" style="padding: 1rem 1.8rem;">
+    <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+      <div><span class="badge" style="background:rgba(59,130,246,0.2); color:#3b82f6;">📁 Filtro atual: <span id="filtroNome">Todos os meses</span></span></div>
+      <div><span class="badge" style="background:rgba(45,212,191,0.2); color:#2dd4bf;">📊 Período filtrado: <span id="filtroPront">1.017</span> pront. · <span id="filtroErr">4.885</span> erros</span></div>
+    </div>
+  </div>
+
+  <!-- Comparativo mensal (dinâmico) -->
   <div class="section">
-    <h2 class="section-title">Destaque do período</h2>
-    <p class="section-sub">Comparativo objetivo de Dezembro/2025 vs Janeiro/2026 (com base em <code>fim_auditoria</code> / <code>recebimento_prontuario</code> / <code>data_criacao</code>).</p>
-    <div class="compare">
-      <div class="compare-card">
-        <div class="compare-title">Dezembro/2025</div>
-        <div class="compare-kpis">
-          <div><span class="k">Prontuários</span><span class="v">348</span></div>
-          <div><span class="k">Erros</span><span class="v">2.125</span></div>
-          <div><span class="k">% com erro</span><span class="v">89,94%</span></div>
-          <div><span class="k">Erros/pront.</span><span class="v">6,11</span></div>
-        </div>
-      </div>
-      <div class="compare-card">
-        <div class="compare-title">Janeiro/2026</div>
-        <div class="compare-kpis">
-          <div><span class="k">Prontuários</span><span class="v">206</span></div>
-          <div><span class="k">Erros</span><span class="v">1.179</span></div>
-          <div><span class="k">% com erro</span><span class="v">94,17%</span></div>
-          <div><span class="k">Erros/pront.</span><span class="v">5,72</span></div>
-        </div>
-      </div>
+    <h2 class="section-title">Comparativo executivo</h2>
+    <p class="section-sub">Mês selecionado vs. mês anterior</p>
+    <div class="compare-cards" id="compareContainer">
+      <!-- preenchido via JS -->
     </div>
-    <div class="callout" style="margin-top:12px">
-      <b>Leitura rápida:</b> de Dez/2025 para Jan/2026, houve variação de <b>-946</b> erros e redução no volume de erros, com mudança de +4,23 p.p. na taxa de prontuários com erro.
+    <div class="callout" id="calloutCompare">
+      <b>Leitura rápida:</b> de Dez/2025 para Jan/2026, houve variação de <b>-946</b> erros e redução no volume, com aumento de +4,23 p.p. na taxa de prontuários com erro.
     </div>
   </div>
 
-  <!-- Tendência mensal (tabela) + SLAs -->
-  <div class="section grid two">
-    <div class="card">
-      <h3 class="section-title" style="margin-top:0">Tendência mensal</h3>
-      <p class="section-sub">Série histórica (prontuários, prontuários com erro e total de erros).</p>
-      <div style="overflow-x: auto;">
-        <table class="table">
+  <!-- Tendência mensal + SLAs -->
+  <div class="grid-2">
+    <div class="section">
+      <h2 class="section-title">📈 Tendência mensal</h2>
+      <p class="section-sub">Prontuários e erros (clique no filtro para detalhar)</p>
+      <div class="table-wrapper">
+        <table id="trendTable">
           <thead>
-            <tr><th>Mês</th><th class="num">Prontuários</th><th class="num">c/ erro</th><th class="num">Erros</th></tr>
+            <tr><th>Mês</th><th class="num">Pront.</th><th class="num">c/ erro</th><th class="num">Erros</th><th class="num">Erros/pront.</th></tr>
           </thead>
           <tbody>
-            <tr><td>2025-10</td><td class="num">87</td><td class="num">87</td><td class="num">438</td></tr>
-            <tr><td>2025-11</td><td class="num">182</td><td class="num">153</td><td class="num">643</td></tr>
-            <tr><td>2025-12</td><td class="num">348</td><td class="num">313</td><td class="num">2.125</td></tr>
-            <tr><td>2026-01</td><td class="num">206</td><td class="num">194</td><td class="num">1.179</td></tr>
-            <tr><td>2026-02</td><td class="num">16</td><td class="num">15</td><td class="num">72</td></tr>
+            <tr data-month="2025-10"><td>2025-10</td><td class="num">87</td><td class="num">87</td><td class="num">438</td><td class="num">5,03</td></tr>
+            <tr data-month="2025-11"><td>2025-11</td><td class="num">182</td><td class="num">153</td><td class="num">643</td><td class="num">3,53</td></tr>
+            <tr data-month="2025-12"><td>2025-12</td><td class="num">348</td><td class="num">313</td><td class="num">2.125</td><td class="num">6,11</td></tr>
+            <tr data-month="2026-01"><td>2026-01</td><td class="num">206</td><td class="num">194</td><td class="num">1.179</td><td class="num">5,72</td></tr>
+            <tr data-month="2026-02"><td>2026-02</td><td class="num">16</td><td class="num">15</td><td class="num">72</td><td class="num">4,50</td></tr>
           </tbody>
         </table>
+      </div>
+      <!-- mini barras de tendência (visual) -->
+      <div style="margin-top:1rem; display:flex; gap:0.5rem; align-items:center;">
+        <span style="color:var(--text-secondary);">Erros:</span>
+        <div style="flex:1; display:flex; gap:2px; height:40px; align-items:flex-end;">
+          <div style="flex:1; background:#2dd4bf; height:calc(438/2125*40px); min-height:4px; border-radius:4px 4px 0 0;"></div>
+          <div style="flex:1; background:#2dd4bf; height:calc(643/2125*40px); min-height:4px;"></div>
+          <div style="flex:1; background:#2dd4bf; height:40px;"></div>
+          <div style="flex:1; background:#2dd4bf; height:calc(1179/2125*40px);"></div>
+          <div style="flex:1; background:#2dd4bf; height:calc(72/2125*40px);"></div>
+        </div>
       </div>
     </div>
-    <div class="card">
-      <h3 class="section-title" style="margin-top:0">SLAs e tempos (dados válidos)</h3>
-      <p class="section-sub">Intervalos não‑negativos, outliers removidos.</p>
-      <div style="overflow:auto">
-        <table class="table">
-          <thead><tr><th>Métrica</th><th class="num">Mediana</th><th class="num">Média</th><th class="num">P90</th><th class="muted">Amostra</th></tr></thead>
+
+    <div class="section">
+      <h2 class="section-title">⏱️ SLAs & tempos</h2>
+      <p class="section-sub">Mediana em dias (dados consistentes)</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Métrica</th><th class="num">Mediana</th><th class="num">Média</th><th>P90</th></tr></thead>
           <tbody>
-            <tr><td>Tempo de permanência (alta − admissão)</td><td class="num">1,0</td><td class="num">1,3</td><td class="num">1,0</td><td class="muted">n=835</td></tr>
-            <tr><td>Recebimento → Fim auditoria</td><td class="num">1,0</td><td class="num">2,1</td><td class="num">4,0</td><td class="muted">n=832</td></tr>
-            <tr><td>Fim auditoria → Envio faturamento</td><td class="num">0,0</td><td class="num">0,0</td><td class="num">0,0</td><td class="muted">n=821</td></tr>
-            <tr><td>Alta → Envio faturamento</td><td class="num">8,0</td><td class="num">9,6</td><td class="num">16,0</td><td class="muted">n=827</td></tr>
+            <tr><td>Permanência (alta − admissão)</td><td class="num">1,0</td><td class="num">1,3</td><td class="num">1,0</td></tr>
+            <tr><td>Recebimento → Fim auditoria</td><td class="num">1,0</td><td class="num">2,1</td><td class="num">4,0</td></tr>
+            <tr><td>Fim auditoria → Envio fat.</td><td class="num">0,0</td><td class="num">0,0</td><td class="num">0,0</td></tr>
+            <tr><td>Alta → Envio faturamento</td><td class="num">8,0</td><td class="num">9,6</td><td class="num">16,0</td></tr>
           </tbody>
         </table>
       </div>
-      <p class="muted" style="margin:10px 0 0; font-size:11px">
-        Obs.: SLAs “estranhos” (negativo/muito alto) costumam vir de datas invertidas ou vazias.
-      </p>
     </div>
   </div>
 
-  <!-- Top setor / convênio / tipo (substituem as imagens) -->
-  <div class="section grid three">
-    <div class="card">
-      <h3 class="section-title" style="margin-top:0">Erros por setor</h3>
-      <p class="section-sub">Top (dados disponíveis)</p>
-      <table class="table">
-        <thead><tr><th>Setor</th><th class="num">Erros</th></tr></thead>
-        <tbody>
+  <!-- Setor / Convênio / Tipo (cards) -->
+  <div class="grid-3">
+    <div class="section">
+      <h3 class="section-title" style="font-size:1.2rem;">🏥 Erros por setor</h3>
+      <div class="table-wrapper">
+        <table>
+          <tr><th>Setor</th><th class="num">Erros</th></tr>
           <tr><td>INTERNAÇÃO / CC</td><td class="num">4.547</td></tr>
           <tr><td>INTERNAÇÃO / CLINICA</td><td class="num">338</td></tr>
-        </tbody>
-      </table>
+        </table>
+      </div>
     </div>
-    <div class="card">
-      <h3 class="section-title" style="margin-top:0">Erros por convênio</h3>
-      <p class="section-sub">Top 10</p>
-      <div style="overflow:auto; max-height:200px">
-        <table class="table">
+    <div class="section">
+      <h3 class="section-title" style="font-size:1.2rem;">🏥 Top convênios</h3>
+      <div class="table-wrapper" style="max-height:200px; overflow-y:auto;">
+        <table>
           <thead><tr><th>Convênio</th><th class="num">Erros</th></tr></thead>
           <tbody>
             <tr><td>UNIMED</td><td class="num">3.776</td></tr>
@@ -271,89 +488,49 @@
         </table>
       </div>
     </div>
-    <div class="card">
-      <h3 class="section-title" style="margin-top:0">Tipos de erro</h3>
-      <p class="section-sub">Top</p>
-      <table class="table">
-        <thead><tr><th>Tipo</th><th class="num">Erros</th></tr></thead>
-        <tbody>
+    <div class="section">
+      <h3 class="section-title" style="font-size:1.2rem;">📌 Tipos de erro</h3>
+      <div class="table-wrapper">
+        <table>
+          <tr><th>Tipo</th><th class="num">Erros</th></tr>
           <tr><td>ERRO FATURAMENTO</td><td class="num">3.627</td></tr>
           <tr><td>ERRO ENFERMAGEM</td><td class="num">934</td></tr>
           <tr><td>ERRO MÉDICO</td><td class="num">199</td></tr>
           <tr><td>ERRO RECEPÇÃO</td><td class="num">124</td></tr>
-          <tr><td>ERRO ENVOLVENDO EQUIPE MULTIDICIPLINAR</td><td class="num">1</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- Pareto de causas (agora tabela com percentuais corretos) + lista detalhada -->
-  <div class="section grid two">
-    <div class="card">
-      <h3 class="section-title" style="margin-top:0">Pareto de causas</h3>
-      <p class="section-sub">Top 15 causas e acumulado (base: total de erros = 4.885)</p>
-      <div style="overflow:auto; max-height:360px">
-        <table class="table">
-          <thead>
-            <tr><th>Causa</th><th class="num">Erros</th><th class="num">%</th><th class="num">% acum.</th></tr>
-          </thead>
-          <tbody>
-            <!-- dados extraídos do JSON, com percentuais calculados sobre 4885 -->
-            <tr><td>MATERIAL NÃO COBRADO</td><td class="num">1.380</td><td class="num">28,25%</td><td class="num">28,25%</td></tr>
-            <tr><td>MEDICAÇÃO NÃO COBRADA</td><td class="num">1.099</td><td class="num">22,50%</td><td class="num">50,75%</td></tr>
-            <tr><td>FALTA IMPRESSÃO RELATORIOS CENTRO CIRURGICO</td><td class="num">596</td><td class="num">12,20%</td><td class="num">62,95%</td></tr>
-            <tr><td>COBRANÇA INDEVIDA</td><td class="num">482</td><td class="num">9,87%</td><td class="num">72,82%</td></tr>
-            <tr><td>NÃO COBRADO TX ALIMENTAÇÃO</td><td class="num">183</td><td class="num">3,75%</td><td class="num">76,57%</td></tr>
-            <tr><td>FALTA IMPRESSÃO EVOLUÇÃO MÉDICA</td><td class="num">146</td><td class="num">2,99%</td><td class="num">79,56%</td></tr>
-            <tr><td>COBRANÇA INDEVIDA (2)</td><td class="num">86</td><td class="num">1,76%</td><td class="num">81,32%</td></tr>
-            <tr><td>FALTA COBRAR FIO CIRURGICO</td><td class="num">86</td><td class="num">1,76%</td><td class="num">83,08%</td></tr>
-            <tr><td>FALTA IMPRESSÃO RELATÓRIO DE ENFERMAGEM</td><td class="num">83</td><td class="num">1,70%</td><td class="num">84,78%</td></tr>
-            <tr><td>GUIA SEM ASSINATURA</td><td class="num">72</td><td class="num">1,47%</td><td class="num">86,25%</td></tr>
-            <tr><td>FALTA IMPRESSÃO RELATORIO DE ENFERMAGEM</td><td class="num">63</td><td class="num">1,29%</td><td class="num">87,54%</td></tr>
-            <tr><td>FALTA IMPRESSÃO EVOLUÇÃO MEDICA</td><td class="num">51</td><td class="num">1,04%</td><td class="num">88,58%</td></tr>
-            <tr><td>FALTA IMPRESSÃO RELATÓRIO DE ENFERMAGEM POSTO</td><td class="num">49</td><td class="num">1,00%</td><td class="num">89,58%</td></tr>
-            <tr><td>FALTA BOLAR OU CHECAR MEDICAÇÃO</td><td class="num">43</td><td class="num">0,88%</td><td class="num">90,46%</td></tr>
-            <tr><td>TX ALIMENTAÇÃO</td><td class="num">42</td><td class="num">0,86%</td><td class="num">91,32%</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="muted" style="margin-top:8px">* acumulado considera as causas listadas; as demais somam 8,68%.</p>
-    </div>
-    <div class="card">
-      <h3 class="section-title" style="margin-top:0">Top causas (tabela completa)</h3>
-      <p class="section-sub">Base: tabela <code>erro</code> agrupada por <code>causa</code>.</p>
-      <div style="overflow:auto; max-height:360px">
-        <table class="table">
-          <thead><tr><th>Causa</th><th class="num">Erros</th><th class="num">% (total 4.885)</th></tr></thead>
-          <tbody>
-            <tr><td>MATERIAL NÃO COBRADO</td><td class="num">1.380</td><td class="num">28,25%</td></tr>
-            <tr><td>MEDICAÇÃO NÃO COBRADA</td><td class="num">1.099</td><td class="num">22,50%</td></tr>
-            <tr><td>FALTA IMPRESSÃO RELATORIOS CENTRO CIRURGICO</td><td class="num">596</td><td class="num">12,20%</td></tr>
-            <tr><td>COBRANÇA INDEVIDA </td><td class="num">482</td><td class="num">9,87%</td></tr>
-            <tr><td>NÃO COBRADO TX ALIMENTAÇÃO</td><td class="num">183</td><td class="num">3,75%</td></tr>
-            <tr><td>FALTA IMPRESSÃO EVOLUÇÃO MÉDICA </td><td class="num">146</td><td class="num">2,99%</td></tr>
-            <tr><td>COBRANÇA INDEVIDA</td><td class="num">86</td><td class="num">1,76%</td></tr>
-            <tr><td>FALTA COBRAR FIO CIRURGICO</td><td class="num">86</td><td class="num">1,76%</td></tr>
-            <tr><td>FALTA IMPRESSÃO RELATÓRIO DE ENFERMAGEM</td><td class="num">83</td><td class="num">1,70%</td></tr>
-            <tr><td>GUIA SEM ASSINATURA</td><td class="num">72</td><td class="num">1,47%</td></tr>
-            <tr><td>FALTA IMPRESSÃO RELATORIO DE ENFERMAGEM</td><td class="num">63</td><td class="num">1,29%</td></tr>
-            <tr><td>FALTA IMPRESSÃO EVOLUÇÃO MEDICA</td><td class="num">51</td><td class="num">1,04%</td></tr>
-            <tr><td>FALTA IMPRESSÃO RELATÓRIO DE ENFERMAGEM POSTO</td><td class="num">49</td><td class="num">1,00%</td></tr>
-            <tr><td>FALTA BOLAR OU CHECAR MEDICAÇÃO </td><td class="num">43</td><td class="num">0,88%</td></tr>
-            <tr><td>TX ALIMENTAÇÃO</td><td class="num">42</td><td class="num">0,86%</td></tr>
-          </tbody>
+          <tr><td>ERRO MULTIDISCIPLINAR</td><td class="num">1</td></tr>
         </table>
       </div>
     </div>
   </div>
 
-  <!-- Responsáveis e próximos passos -->
-  <div class="section grid two">
-    <div class="card">
-      <h3 class="section-title" style="margin-top:0">Responsáveis (quando informado)</h3>
-      <p class="section-sub">Top 10 responsáveis vinculados no registro do erro.</p>
-      <div style="overflow:auto">
-        <table class="table">
+  <!-- Pareto de causas (compacto + visual) -->
+  <div class="grid-2">
+    <div class="section">
+      <h2 class="section-title">📊 Pareto de causas (top 15)</h2>
+      <p class="section-sub">acumulado sobre 4.885 erros</p>
+      <div class="table-wrapper" style="max-height:300px;">
+        <table>
+          <thead><tr><th>Causa</th><th class="num">Erros</th><th class="num">%</th><th>% acum.</th></tr></thead>
+          <tbody>
+            <tr><td>MATERIAL NÃO COBRADO</td><td class="num">1.380</td><td class="num">28,25%</td><td><div class="progress-bar"><div class="bar-bg"><div class="bar" style="width:28.25%"></div></div>28,3%</div></td></tr>
+            <tr><td>MEDICAÇÃO NÃO COBRADA</td><td class="num">1.099</td><td class="num">22,50%</td><td>50,8%</td></tr>
+            <tr><td>FALTA IMPRESSÃO CENTRO CIRURGICO</td><td class="num">596</td><td class="num">12,20%</td><td>63,0%</td></tr>
+            <tr><td>COBRANÇA INDEVIDA</td><td class="num">482</td><td class="num">9,87%</td><td>72,8%</td></tr>
+            <tr><td>NÃO COBRADO TX ALIMENTAÇÃO</td><td class="num">183</td><td class="num">3,75%</td><td>76,6%</td></tr>
+            <tr><td>FALTA IMPRESSÃO EVOLUÇÃO MÉDICA</td><td class="num">146</td><td class="num">2,99%</td><td>79,6%</td></tr>
+            <tr><td>COBRANÇA INDEVIDA (2)</td><td class="num">86</td><td class="num">1,76%</td><td>81,3%</td></tr>
+            <tr><td>FALTA COBRAR FIO CIRURGICO</td><td class="num">86</td><td class="num">1,76%</td><td>83,1%</td></tr>
+            <tr><td>FALTA IMPRESSÃO RELATÓRIO ENFERMAGEM</td><td class="num">83</td><td class="num">1,70%</td><td>84,8%</td></tr>
+            <tr><td>GUIA SEM ASSINATURA</td><td class="num">72</td><td class="num">1,47%</td><td>86,3%</td></tr>
+            <tr><td>… (mais 5)</td><td class="num">248</td><td class="num">5,08%</td><td>100%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="section">
+      <h2 class="section-title">👤 Responsáveis (top 10)</h2>
+      <div class="table-wrapper">
+        <table>
           <thead><tr><th>Responsável</th><th class="num">Erros</th></tr></thead>
           <tbody>
             <tr><td>BRUNO TAVARES</td><td class="num">2.324</td></tr>
@@ -370,23 +547,185 @@
         </table>
       </div>
     </div>
-    <div class="card">
-      <h3 class="section-title" style="margin-top:0">Próximos passos sugeridos</h3>
-      <p class="section-sub">Com base no seu banco, dá para evoluir para governança e redução de retrabalho.</p>
-      <ol style="margin:0; padding-left: 18px; color: rgba(255,255,255,.86); font-size: 12px; line-height:1.55">
-        <li><b>Padronizar datas</b> (recebimento, fim auditoria, faturamento) e bloquear inversões.</li>
-        <li><b>Completar dicionários</b>: <code>categoria_erro</code> está vazio — preencher e vincular no <code>erro.categoria_erro_id</code>.</li>
-        <li><b>Plano 80/20</b>: atacar as 3–5 causas líderes (Pareto) com ações e re-auditoria mensal.</li>
-        <li><b>Metas</b>: reduzir “erros por prontuário” e “% prontuários com erro” por setor/convênio.</li>
-        <li><b>Rotina executiva</b>: gerar esta apresentação mensal automaticamente (HTML/PDF).</li>
-      </ol>
+  </div>
+
+  <!-- Próximos passos -->
+  <div class="section">
+    <h2 class="section-title">⏩ Próximos passos (executivo)</h2>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:1rem;">
+      <div style="background:rgba(0,0,0,0.2); border-radius:1.2rem; padding:1.2rem;">
+        <div style="color:#2dd4bf; font-weight:600;">📅 1. Padronizar datas</div>
+        <p style="color:var(--text-secondary); font-size:0.9rem; margin-top:0.5rem;">Recebimento, fim auditoria e faturamento sem inversões.</p>
+      </div>
+      <div style="background:rgba(0,0,0,0.2); border-radius:1.2rem; padding:1.2rem;">
+        <div style="color:#3b82f6; font-weight:600;">📁 2. Completar dicionários</div>
+        <p style="color:var(--text-secondary); font-size:0.9rem;">Preencher categoria_erro e vincular em erro.categoria_erro_id.</p>
+      </div>
+      <div style="background:rgba(0,0,0,0.2); border-radius:1.2rem; padding:1.2rem;">
+        <div style="color:#f59e0b; font-weight:600;">🎯 3. Plano 80/20</div>
+        <p style="color:var(--text-secondary); font-size:0.9rem;">Atacar as 3–5 causas líderes do Pareto com metas mensais.</p>
+      </div>
+      <div style="background:rgba(0,0,0,0.2); border-radius:1.2rem; padding:1.2rem;">
+        <div style="color:#f43f5e; font-weight:600;">📉 4. Metas por setor/convênio</div>
+        <p style="color:var(--text-secondary); font-size:0.9rem;">Reduzir erros por prontuário e % com erro.</p>
+      </div>
     </div>
   </div>
 
   <div class="footer">
-    Arquivo estático (HTML) · Gerado a partir do seu <code>auditoria.db</code> · Todos os dados inline, sem imagens externas.
+    Painel executivo · gerado a partir do auditoria.db · dados atualizados em fevereiro/2026
   </div>
-
 </div>
+
+<script>
+  (function() {
+    // Dados mensais completos
+    const monthData = [
+      { month: '2025-10', pront: 87, comErro: 87, erros: 438, errosPorPront: 5.03 },
+      { month: '2025-11', pront: 182, comErro: 153, erros: 643, errosPorPront: 3.53 },
+      { month: '2025-12', pront: 348, comErro: 313, erros: 2125, errosPorPront: 6.11 },
+      { month: '2026-01', pront: 206, comErro: 194, erros: 1179, errosPorPront: 5.72 },
+      { month: '2026-02', pront: 16, comErro: 15, erros: 72, errosPorPront: 4.50 }
+    ];
+
+    const totalGlobal = { pront: 1017, comErro: 940, erros: 4885, errosPorPront: 4.80 };
+
+    // Elementos
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const trendRows = document.querySelectorAll('#trendTable tbody tr');
+    const kpiPront = document.getElementById('kpiProntuarios');
+    const kpiComErro = document.getElementById('kpiComErro');
+    const kpiErros = document.getElementById('kpiErros');
+    const kpiErrosPorPront = document.getElementById('kpiErrosPorPront');
+    const filtroNome = document.getElementById('filtroNome');
+    const filtroPront = document.getElementById('filtroPront');
+    const filtroErr = document.getElementById('filtroErr');
+    const compareContainer = document.getElementById('compareContainer');
+    const callout = document.getElementById('calloutCompare');
+
+    let currentMonth = 'all';
+
+    function updateFilterUI(activeMonth) {
+      filterButtons.forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.month === activeMonth) btn.classList.add('active');
+      });
+    }
+
+    function getMonthData(month) {
+      return monthData.find(m => m.month === month) || null;
+    }
+
+    function getPreviousMonth(month) {
+      const index = monthData.findIndex(m => m.month === month);
+      return index > 0 ? monthData[index-1] : null;
+    }
+
+    function formatNumber(num) {
+      return num.toLocaleString('pt-BR');
+    }
+
+    function updateDisplay() {
+      // 1. Filtrar linhas da tabela de tendência
+      let visibleMonths = [];
+      trendRows.forEach(row => {
+        const month = row.dataset.month;
+        if (currentMonth === 'all' || month === currentMonth) {
+          row.style.display = '';
+          visibleMonths.push(month);
+        } else {
+          row.style.display = 'none';
+        }
+      });
+
+      // 2. Calcular totais filtrados (soma dos meses visíveis)
+      let filtrados = monthData.filter(m => currentMonth === 'all' || m.month === currentMonth);
+      let totalPront = filtrados.reduce((acc, m) => acc + m.pront, 0);
+      let totalErros = filtrados.reduce((acc, m) => acc + m.erros, 0);
+      let totalComErro = filtrados.reduce((acc, m) => acc + m.comErro, 0);
+      let mediaErrosPorPront = totalPront ? (totalErros / totalPront).toFixed(2) : '0,00';
+
+      // Se for "Todos", mostra totais globais
+      if (currentMonth === 'all') {
+        totalPront = totalGlobal.pront;
+        totalErros = totalGlobal.erros;
+        totalComErro = totalGlobal.comErro;
+        mediaErrosPorPront = totalGlobal.errosPorPront.toFixed(2).replace('.', ',');
+      }
+
+      kpiPront.innerText = formatNumber(totalPront);
+      kpiComErro.innerText = formatNumber(totalComErro);
+      kpiErros.innerText = formatNumber(totalErros);
+      kpiErrosPorPront.innerText = mediaErrosPorPront;
+
+      filtroNome.innerText = currentMonth === 'all' ? 'Todos os meses' : currentMonth.replace('-', '/');
+      filtroPront.innerText = formatNumber(totalPront);
+      filtroErr.innerText = formatNumber(totalErros);
+
+      // 3. Atualizar cards comparativos
+      if (currentMonth === 'all') {
+        // Mostra Dez vs Jan como padrão
+        let dez = getMonthData('2025-12');
+        let jan = getMonthData('2026-01');
+        renderCompareCards(dez, jan);
+        callout.innerHTML = `<b>Leitura rápida:</b> de Dez/2025 para Jan/2026, houve variação de <b>${(jan.erros - dez.erros) > 0 ? '+' : ''}${(jan.erros - dez.erros)}</b> erros, taxa de pront. c/ erro ${((jan.comErro/jan.pront*100) - (dez.comErro/dez.pront*100)).toFixed(2)} p.p.`;
+      } else {
+        let current = getMonthData(currentMonth);
+        let previous = getPreviousMonth(currentMonth);
+        if (current) {
+          renderCompareCards(previous, current);
+          if (previous) {
+            let varErros = current.erros - previous.erros;
+            let varPercentPront = ((current.comErro/current.pront) - (previous.comErro/previous.pront)) * 100;
+            callout.innerHTML = `<b>Análise:</b> ${currentMonth.replace('-','/')} vs ${previous.month.replace('-','/')} · erros: ${varErros > 0 ? '+' : ''}${varErros} · % c/ erro: ${varPercentPront > 0 ? '+' : ''}${varPercentPront.toFixed(2)} p.p.`;
+          } else {
+            callout.innerHTML = `<b>Mês inicial:</b> não há mês anterior para comparação.`;
+          }
+        }
+      }
+    }
+
+    function renderCompareCards(prev, curr) {
+      if (!curr) return;
+      let prevHtml = prev ? `
+        <div class="compare-card">
+          <h3>${prev.month.replace('-', '/')}</h3>
+          <div class="compare-metrics">
+            <div class="metric"><small>Prontuários</small><div class="value">${prev.pront}</div></div>
+            <div class="metric"><small>Erros</small><div class="value">${prev.erros}</div></div>
+            <div class="metric"><small>% c/ erro</small><div class="value">${(prev.comErro/prev.pront*100).toFixed(1)}%</div></div>
+            <div class="metric"><small>Erros/pront.</small><div class="value">${prev.errosPorPront.toFixed(2)}</div></div>
+          </div>
+        </div>
+      ` : `<div class="compare-card"><h3>Mês anterior</h3><p style="color:var(--text-secondary)">Sem dados</p></div>`;
+
+      let currHtml = `
+        <div class="compare-card" style="border-color:#2dd4bf;">
+          <h3 style="color:#2dd4bf;">${curr.month.replace('-', '/')} (selecionado)</h3>
+          <div class="compare-metrics">
+            <div class="metric"><small>Prontuários</small><div class="value">${curr.pront}</div></div>
+            <div class="metric"><small>Erros</small><div class="value">${curr.erros}</div></div>
+            <div class="metric"><small>% c/ erro</small><div class="value">${(curr.comErro/curr.pront*100).toFixed(1)}%</div></div>
+            <div class="metric"><small>Erros/pront.</small><div class="value">${curr.errosPorPront.toFixed(2)}</div></div>
+          </div>
+        </div>
+      `;
+
+      compareContainer.innerHTML = prevHtml + currHtml;
+    }
+
+    // Event listeners
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentMonth = btn.dataset.month;
+        updateFilterUI(currentMonth);
+        updateDisplay();
+      });
+    });
+
+    // Inicializa
+    updateDisplay();
+  })();
+</script>
 </body>
 </html>
